@@ -22,7 +22,7 @@ public class TaskCounterImpl implements TaskCountKeeper {
         if (totalTasks.get() == -1) {
             return false;
         } else {
-            return totalTasks.get() == processedTasks.get();
+            return totalTasks.get() < processedTasks.get();
         }
     }
 

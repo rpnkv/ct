@@ -1,22 +1,22 @@
 package org.rpnkv.practive.iv.ct.get;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import org.rpnkv.practive.iv.ct.synchronize.exchange.SiteConsumer;
 
 public class PullTask implements Runnable {
 
-    private final Supplier<byte[]> requestExecutor;
-    private final Consumer<byte[]> resultConsumer;
+    private final SiteConsumer siteConsumer;
+    private final Site site;
+    private final MetadataLoader metadataLoader;
 
-
-    PullTask(Supplier<byte[]> requestExecutor, Consumer<byte[]> resultConsumer) {
-        this.requestExecutor = requestExecutor;
-        this.resultConsumer = resultConsumer;
+    public PullTask(SiteConsumer siteConsumer, MetadataLoader metadataLoader, Site site) {
+        this.metadataLoader = metadataLoader;
+        this.siteConsumer = siteConsumer;
+        this.site = site;
     }
 
     @Override
     public void run() {
-        byte[] result = requestExecutor.get();
-        resultConsumer.accept(result);
+        Site result = metadataLoader.loadMetadata(site);
+        siteConsumer.consumeSite(result);
     }
 }

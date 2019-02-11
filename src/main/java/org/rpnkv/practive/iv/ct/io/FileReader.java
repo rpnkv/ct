@@ -1,11 +1,14 @@
-package org.rpnkv.practive.iv.ct.read;
+package org.rpnkv.practive.iv.ct.io;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.rpnkv.practive.iv.ct.get.PullTask;
 import org.rpnkv.practive.iv.ct.get.PullTaskFactory;
+import org.rpnkv.practive.iv.ct.get.Site;
 import org.rpnkv.practive.iv.ct.synchronize.count.TaskCounterSetter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,9 +18,12 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 
 @Component
+@PropertySource("classpath:application.properties")
 public class FileReader {
 
-    @Value("file.inputPath")
+    private static final Logger logger = LoggerFactory.getLogger(FileReader.class);
+
+    @Value("${file.input}")
     private String inputPath;
 
     private final TaskCounterSetter taskCounterSetter;
@@ -28,7 +34,7 @@ public class FileReader {
 
     @Autowired
     public FileReader(TaskCounterSetter taskCounterSetter, ExecutorService executorService, PullTaskFactory taskFactory) {
-        this.taskCounterSetter = taskCounterSetter;
+       this.taskCounterSetter = taskCounterSetter;
         this.executorService = executorService;
         this.taskFactory = taskFactory;
     }
@@ -38,18 +44,21 @@ public class FileReader {
 
         try {
             long tasksCount = Files.lines(path)
+                    .map(Site::new)
                     .map(taskFactory::create)
                     .map(this::appendToExecutorService)
                     .count();
 
             taskCounterSetter.setTaskCount((int) tasksCount);
+            logger.info("Submitted {} tasks", tasksCount);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private PullTask appendToExecutorService(PullTask pullTask) {
-        throw new NotImplementedException("");
+        executorService.execute(pullTask);
+        return pullTask;
     }
 
 }
