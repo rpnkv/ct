@@ -33,8 +33,19 @@ public class FileWriter {
         try {
             outputStream.write((site.getUrl() + "---------\n").getBytes());
             outputStream.write(site.getContents());
+            outputStream.write("\n".getBytes());
         } catch (IOException e) {
             logger.error("Failed saving contents of " + site. getUrl(), e);
         }
+    }
+
+    public void close() {
+        try {
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

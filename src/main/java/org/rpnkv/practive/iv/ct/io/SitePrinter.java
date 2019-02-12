@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutorService;
+
 @Component
 public class SitePrinter implements ApplicationListener<ContextStartedEvent> {
 
@@ -15,23 +17,29 @@ public class SitePrinter implements ApplicationListener<ContextStartedEvent> {
 
     private final SiteProducer siteProducer;
     private final FileWriter fileWriter;
+    private final ExecutorService executorService;
 
     @Autowired
-    public SitePrinter(TaskCountChecker taskCountChecker, SiteProducer siteProducer, FileWriter fileWriter) {
+    public SitePrinter(TaskCountChecker taskCountChecker, SiteProducer siteProducer, FileWriter fileWriter,
+                       ExecutorService executorService) {
         this.taskCountChecker = taskCountChecker;
         this.siteProducer = siteProducer;
         this.fileWriter = fileWriter;
+        this.executorService = executorService;
     }
 
     @Override
     public void onApplicationEvent(ContextStartedEvent event) {
-        int count = 0;
+        new Thread(this::runWriter, "Writer thread").start();
+    }
+
+    void runWriter(){
         while (!taskCountChecker.incrementAndCheck()){
             Site site = siteProducer.nextSite();
             fileWriter.writeSite(site);
-            count++;
         }
+        executorService.shutdown();
 
-        System.out.println("consumed " + count + " sites");
+        fileWriter.close();
     }
 }

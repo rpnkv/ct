@@ -16,7 +16,7 @@ public class Main implements ApplicationListener<ContextStartedEvent> {
 
     @Bean
     ExecutorService executorService(){
-        return Executors.newCachedThreadPool();
+        return Executors.newFixedThreadPool(12);
     }
 
     @Bean
@@ -32,12 +32,8 @@ public class Main implements ApplicationListener<ContextStartedEvent> {
         ctx.start();
     }
 
-    private void start(){
-        fileReader.start();
-    }
-
     @Override
     public void onApplicationEvent(ContextStartedEvent event) {
-        fileReader.start();
+        new Thread(fileReader::start, "File read thread").start();
     }
 }
