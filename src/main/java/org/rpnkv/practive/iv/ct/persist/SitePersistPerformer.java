@@ -1,4 +1,4 @@
-package org.rpnkv.practive.iv.ct.presist;
+package org.rpnkv.practive.iv.ct.persist;
 
 import org.rpnkv.practive.iv.ct.core.Site;
 import org.slf4j.Logger;
@@ -33,8 +33,8 @@ public class SitePersistPerformer {
     void persist(Site site) {
         try {
             outputStream.write((site.getUrl() + "---------\n").getBytes());
-           // outputStream.write(site.getContents());
-           // outputStream.write("\n".getBytes());
+            outputStream.write(site.getContents());
+             outputStream.write("\n\n".getBytes());
         } catch (IOException e) {
             logger.error("Failed saving contents of " + site. getUrl(), e);
         }

@@ -37,11 +37,16 @@ public class TasksProducer implements RemainingTasksResolver, Runnable{
     @Override
     public void run() {
         domainReader.getDomains()
+                .map(this::applyProtocol)
                 .map(Site::new)
                 .map(taskFactory)
                 .forEach(executionQueue);
 
         submittedTasksCount = taskFactory.getTotalCount();
         isCountFinal = true;
+    }
+
+    private String applyProtocol(String s) {
+        return "http://".concat(s);
     }
 }

@@ -2,7 +2,7 @@ package org.rpnkv.practive.iv.ct.core;
 
 import org.rpnkv.practive.iv.ct.exec.TaskExecutionQueue;
 import org.rpnkv.practive.iv.ct.exec.task.ExecutionTask;
-import org.rpnkv.practive.iv.ct.presist.PersistQueue;
+import org.rpnkv.practive.iv.ct.persist.PersistQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

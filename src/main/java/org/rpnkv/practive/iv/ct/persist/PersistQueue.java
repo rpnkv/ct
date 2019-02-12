@@ -1,4 +1,4 @@
-package org.rpnkv.practive.iv.ct.presist;
+package org.rpnkv.practive.iv.ct.persist;
 
 import org.rpnkv.practive.iv.ct.core.Site;
 import org.slf4j.Logger;

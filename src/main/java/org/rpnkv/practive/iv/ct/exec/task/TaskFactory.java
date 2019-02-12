@@ -12,16 +12,18 @@ public class TaskFactory implements Function<Site, ExecutionTask> {
 
     private int totalCount;
     private final ExecutedTasksConsumer executedTasksConsumer;
+    private final RequestExecutor requestExecutor;
 
     @Autowired
-    public TaskFactory(ExecutedTasksConsumer executedTasksConsumer) {
+    public TaskFactory(ExecutedTasksConsumer executedTasksConsumer, RequestExecutor requestExecutor) {
         this.executedTasksConsumer = executedTasksConsumer;
+        this.requestExecutor = requestExecutor;
     }
 
     @Override
     public ExecutionTask apply(Site site) {
         totalCount++;
-        return new ExecutionTask(executedTasksConsumer, site);
+        return new ExecutionTask(executedTasksConsumer, requestExecutor, site);
     }
 
     public int getTotalCount() {

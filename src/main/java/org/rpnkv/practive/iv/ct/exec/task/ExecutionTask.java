@@ -3,24 +3,23 @@ package org.rpnkv.practive.iv.ct.exec.task;
 import org.rpnkv.practive.iv.ct.core.ExecutedTasksConsumer;
 import org.rpnkv.practive.iv.ct.core.Site;
 
+import java.util.function.Consumer;
+
 public class ExecutionTask implements Runnable {
 
     private final ExecutedTasksConsumer executedTasksConsumer;
+    private final Consumer<Site> requestExecutor;
     private final Site site;
 
-    public ExecutionTask(ExecutedTasksConsumer executedTasksConsumer, Site site) {
+    public ExecutionTask(ExecutedTasksConsumer executedTasksConsumer, Consumer<Site> requestExecutor, Site site) {
         this.executedTasksConsumer = executedTasksConsumer;
+        this.requestExecutor = requestExecutor;
         this.site = site;
     }
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(228);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        site.setContents(new byte[]{1,4,8,8});
+        requestExecutor.accept(site);
         executedTasksConsumer.acceptExecutedTask(this);
     }
 

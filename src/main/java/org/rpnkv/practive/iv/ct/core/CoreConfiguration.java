@@ -16,8 +16,13 @@ public class CoreConfiguration {
     }
 
     @Bean
-    public static ExecutorService executorService(){
+    public ExecutorService executorService(){
         return Executors.newCachedThreadPool();
+    }
+
+    @Bean
+    public Object lock(){
+        return new Object();
     }
 
 }
