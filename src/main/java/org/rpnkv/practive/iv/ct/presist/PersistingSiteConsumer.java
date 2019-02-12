@@ -29,5 +29,7 @@ public class PersistingSiteConsumer implements Runnable{
             Site nextSite = persistQueue.next();
             persistPerformer.persist(nextSite);
         }
+
+        persistPerformer.close();
     }
 }
