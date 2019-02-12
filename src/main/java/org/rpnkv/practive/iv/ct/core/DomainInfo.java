@@ -5,12 +5,12 @@ import java.util.Objects;
 /**
  *
  */
-public class Site {
+public class DomainInfo {
 
     private final String url;
     private byte[] contents;
 
-    public Site(String url) {
+    public DomainInfo(String url) {
         this.url = url;
     }
 
@@ -30,8 +30,8 @@ public class Site {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Site site = (Site) o;
-        return url.equals(site.url);
+        DomainInfo domainInfo = (DomainInfo) o;
+        return url.equals(domainInfo.url);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Site {
 
     @Override
     public String toString() {
-        return "Site{" +
+        return "DomainInfo{" +
                 "url='" + url + '\'' +
                 '}';
     }

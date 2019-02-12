@@ -1,7 +1,7 @@
 package org.rpnkv.practive.iv.ct;
 
-import org.rpnkv.practive.iv.ct.exec.TasksProducer;
-import org.rpnkv.practive.iv.ct.persist.PersistingSiteConsumer;
+import org.rpnkv.practive.iv.ct.rise.DomainInfoFetchTaskProducer;
+import org.rpnkv.practive.iv.ct.persist.PersistingQueueConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -16,8 +16,8 @@ public class Main{
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Main.class);
         ctx.start();
 
-        Runnable persistingSiteConsumer = ctx.getBean(PersistingSiteConsumer.class),
-                taskProducer = ctx.getBean(TasksProducer.class);
+        Runnable persistingSiteConsumer = ctx.getBean(PersistingQueueConsumer.class),
+                taskProducer = ctx.getBean(DomainInfoFetchTaskProducer.class);
 
         Thread persistingThread = new Thread(persistingSiteConsumer, "persisting"),
                 taskProducingThread = new Thread(taskProducer, "task producing");

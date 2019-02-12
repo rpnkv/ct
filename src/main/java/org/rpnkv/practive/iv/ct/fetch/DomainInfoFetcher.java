@@ -1,6 +1,6 @@
-package org.rpnkv.practive.iv.ct.exec.task;
+package org.rpnkv.practive.iv.ct.fetch;
 
-import org.rpnkv.practive.iv.ct.core.Site;
+import org.rpnkv.practive.iv.ct.core.DomainInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +12,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.function.Consumer;
 
+/**
+ * Tries to fill {@link DomainInfo} with first {@link #contentsLength} bytes of contents, fetched from the Internet.
+ * If attempt fails - writes error cause instead of contents.
+ */
 @Service
-public class RequestExecutor implements Consumer<Site> {
+public class DomainInfoFetcher implements Consumer<DomainInfo> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestExecutor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DomainInfoFetcher.class);
 
     @Value("${contents.fetch.length}")
     private int contentsLength;
@@ -27,12 +31,11 @@ public class RequestExecutor implements Consumer<Site> {
     private int readTimeout;
 
     @Override
-    public void accept(Site site) {
+    public void accept(DomainInfo domainInfo) {
         HttpURLConnection connection = null;
 
         try {
-            //Create connection
-            URL url = new URL(site.getUrl());
+            URL url = new URL(domainInfo.getUrl());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);
@@ -40,12 +43,11 @@ public class RequestExecutor implements Consumer<Site> {
             connection.setConnectTimeout(connectionTimeout);
             connection.setReadTimeout(readTimeout);
 
-            //Get Response
             InputStream is = connection.getInputStream();
-            site.setContents(readResponse(is));
+            domainInfo.setContents(readResponse(is));
         } catch (Exception e) {
-            logger.info("Failed fetching from {} - {}", site.getUrl(), e.getMessage());
-            site.setContents(resolveContentsForFailedRequest(e));
+            logger.info("Failed fetching from {} - {}", domainInfo.getUrl(), e.getMessage());
+            domainInfo.setContents(resolveContentsForFailedRequest(e));
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -67,8 +69,9 @@ public class RequestExecutor implements Consumer<Site> {
 
     private byte[] resolveContentsForFailedRequest(Exception e){
         if(e.getMessage() == null || e.getMessage().isEmpty()){
-
+            return "Unknown fetch error".getBytes();
+        }else {
+            return e.getMessage().getBytes();
         }
-        return e.getMessage() != null ? e.getMessage().getBytes() : "Failure".getBytes();
     }
 }

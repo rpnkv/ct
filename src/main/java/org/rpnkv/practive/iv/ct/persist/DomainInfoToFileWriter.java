@@ -1,10 +1,9 @@
 package org.rpnkv.practive.iv.ct.persist;
 
-import org.rpnkv.practive.iv.ct.core.Site;
+import org.rpnkv.practive.iv.ct.core.DomainInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +11,7 @@ import java.io.*;
 
 
 @Service
-public class SitePersistPerformer {
+public class DomainInfoToFileWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(FileWriter.class);
 
@@ -29,13 +28,13 @@ public class SitePersistPerformer {
         outputStream = new BufferedOutputStream(new FileOutputStream(outputPath), bufferSize);
     }
 
-    void persist(Site site) {
+    void persist(DomainInfo domainInfo) {
         try {
-            outputStream.write((site.getUrl() + "---------\n").getBytes());
-            outputStream.write(site.getContents());
-             outputStream.write("\n\n".getBytes());
+            outputStream.write((domainInfo.getUrl() + "---------\n").getBytes());
+            outputStream.write(domainInfo.getContents());
+            outputStream.write("\n\n".getBytes());
         } catch (IOException e) {
-            logger.error("Failed saving contents of " + site. getUrl(), e);
+            logger.error("Failed saving contents of " + domainInfo.getUrl(), e);
         }
     }
 

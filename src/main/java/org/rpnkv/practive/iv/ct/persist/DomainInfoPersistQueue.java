@@ -1,6 +1,6 @@
 package org.rpnkv.practive.iv.ct.persist;
 
-import org.rpnkv.practive.iv.ct.core.Site;
+import org.rpnkv.practive.iv.ct.core.DomainInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,23 +10,26 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Implements buffer for filled {@link DomainInfo} instances, waiting for persist.
+ */
 @Service
-public class PersistQueue {
+public class DomainInfoPersistQueue {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistQueue.class);
+    private static final Logger logger = LoggerFactory.getLogger(DomainInfoPersistQueue.class);
 
-    private final Queue<Site> persistQueue = new LinkedList<>();
+    private final Queue<DomainInfo> persistQueue = new LinkedList<>();
     private final Object lock;
 
     @Value("${queue.persist.length}")
     private int queueLength;
 
     @Autowired
-    public PersistQueue(Object lock) {
+    public DomainInfoPersistQueue(Object lock) {
         this.lock = lock;
     }
 
-    public void submit(Site site){
+    public void submit(DomainInfo domainInfo){
         synchronized (lock){
             while (persistQueue.size() == queueLength){
                 try {
@@ -38,12 +41,12 @@ public class PersistQueue {
                 }
             }
 
-            persistQueue.add(site);
-            logger.debug("submitted site {}", site);
+            persistQueue.add(domainInfo);
+            logger.debug("submitted domainInfo {}", domainInfo);
         }
     }
 
-    Site next(){
+    DomainInfo next(){
         synchronized (lock){
             while (persistQueue.isEmpty()){
                 try {

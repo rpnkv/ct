@@ -1,10 +1,9 @@
-package org.rpnkv.practive.iv.ct.exec;
+package org.rpnkv.practive.iv.ct.fetch;
 
-import org.rpnkv.practive.iv.ct.exec.task.ExecutionTask;
+import org.rpnkv.practive.iv.ct.rise.DomainFetchTaskAsync;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,25 +13,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 @Service
-public class TaskExecutionQueue implements Consumer<ExecutionTask> {
+public class DomainFetchTaskExecutionQueue implements Consumer<DomainFetchTaskAsync> {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskExecutionQueue.class);
+    private static final Logger logger = LoggerFactory.getLogger(DomainFetchTaskExecutionQueue.class);
 
     @Value("${queue.execution.length}")
     private int queueLength;
 
-    private final Queue<ExecutionTask> taskQueue = new LinkedList<>();
+    private final Queue<DomainFetchTaskAsync> taskQueue = new LinkedList<>();
     private final Object lock;
     private final ExecutorService executorService;
 
     @Autowired
-    public TaskExecutionQueue(Object lock, ExecutorService executorService) {
+    public DomainFetchTaskExecutionQueue(Object lock, ExecutorService executorService) {
         this.lock = lock;
         this.executorService = executorService;
     }
 
     @Override
-    public void accept(ExecutionTask executionTask) {
+    public void accept(DomainFetchTaskAsync domainFetchTaskAsync) {
         synchronized (lock){
             while (taskQueue.size() == queueLength){
                 try {
@@ -43,9 +42,9 @@ public class TaskExecutionQueue implements Consumer<ExecutionTask> {
                 }
             }
 
-            taskQueue.add(executionTask);
-            executorService.execute(executionTask);
-            logger.debug("submitted task {}", executionTask);
+            taskQueue.add(domainFetchTaskAsync);
+            executorService.execute(domainFetchTaskAsync);
+            logger.debug("submitted task {}", domainFetchTaskAsync);
 
             if(taskQueue.size() == 1){//TODO check if size check is required
                 lock.notify();
@@ -53,14 +52,15 @@ public class TaskExecutionQueue implements Consumer<ExecutionTask> {
         }
     }
 
-    public void remove(ExecutionTask executionTask) {
+    public void remove(DomainFetchTaskAsync domainFetchTaskAsync) {
         synchronized (lock){
-            boolean remove = taskQueue.remove(executionTask);
+            /*boolean remove = taskQueue.remove(domainFetchTaskAsync);
             if(!remove){
-                logger.error("Attempting to remove task which isn't present inside the queue: {}", executionTask);
-            }
+                logger.error("Attempting to remove task which isn't present inside the queue: {}", domainFetchTaskAsync);
+            }*/
 
-            logger.debug("removed task {}",executionTask);
+            taskQueue.poll();//it appears that doesn't actually matter, which task is removed //TODO create semaphore
+            logger.debug("removed task {}", domainFetchTaskAsync);
 
             lock.notify();
         }
