@@ -28,6 +28,7 @@ public class PersistingSiteConsumer implements Runnable{
         while (remainingTasksResolver.remainingTasksLeft(persistedTasksCount)){
             Site nextSite = persistQueue.next();
             persistPerformer.persist(nextSite);
+            persistedTasksCount++;
         }
 
         persistPerformer.close();

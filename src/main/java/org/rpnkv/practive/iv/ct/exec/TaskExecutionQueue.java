@@ -17,7 +17,7 @@ public class TaskExecutionQueue implements Consumer<ExecutionTask> {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskExecutionQueue.class);
 
-    @Value("${execution.queue.length}")
+    @Value("${queue.execution.length}")
     private int queueLength;
 
     private final Queue<ExecutionTask> taskQueue = new LinkedList<>();
@@ -44,10 +44,24 @@ public class TaskExecutionQueue implements Consumer<ExecutionTask> {
 
             taskQueue.add(executionTask);
             executorService.execute(executionTask);
+            logger.debug("submitted task {}", executionTask);
 
             if(taskQueue.size() == 1){//TODO check if size check is required
                 lock.notify();
             }
+        }
+    }
+
+    public void remove(ExecutionTask executionTask) {
+        synchronized (lock){
+            boolean remove = taskQueue.remove(executionTask);
+            if(!remove){
+                logger.error("Attempting to remove task which isn't present inside the queue: {}", executionTask);
+            }
+
+            logger.debug("removed task {}",executionTask);
+
+            lock.notify();
         }
     }
 }
