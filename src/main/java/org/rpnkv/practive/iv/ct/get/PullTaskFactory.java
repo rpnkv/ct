@@ -1,5 +1,6 @@
 package org.rpnkv.practive.iv.ct.get;
 
+import org.rpnkv.practive.iv.ct.core.Site;
 import org.rpnkv.practive.iv.ct.synchronize.exchange.SiteConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

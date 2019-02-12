@@ -1,6 +1,6 @@
 package org.rpnkv.practive.iv.ct.io;
 
-import org.rpnkv.practive.iv.ct.get.Site;
+import org.rpnkv.practive.iv.ct.core.Site;
 import org.rpnkv.practive.iv.ct.synchronize.count.TaskCountChecker;
 import org.rpnkv.practive.iv.ct.synchronize.exchange.SiteProducer;
 import org.springframework.beans.factory.annotation.Autowired;

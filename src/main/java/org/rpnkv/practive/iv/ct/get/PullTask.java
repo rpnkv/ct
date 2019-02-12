@@ -1,5 +1,6 @@
 package org.rpnkv.practive.iv.ct.get;
 
+import org.rpnkv.practive.iv.ct.core.Site;
 import org.rpnkv.practive.iv.ct.synchronize.exchange.SiteConsumer;
 
 public class PullTask implements Runnable {

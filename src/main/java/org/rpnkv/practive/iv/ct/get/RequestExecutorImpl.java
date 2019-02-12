@@ -1,5 +1,7 @@
 package org.rpnkv.practive.iv.ct.get;
 
+import org.rpnkv.practive.iv.ct.core.Site;
+
 class RequestExecutorImpl {
 
     static Site execute(Site site) {

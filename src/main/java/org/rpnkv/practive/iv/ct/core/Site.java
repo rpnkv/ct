@@ -1,4 +1,4 @@
-package org.rpnkv.practive.iv.ct.get;
+package org.rpnkv.practive.iv.ct.core;
 
 public class Site {
 
