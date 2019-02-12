@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TasksProducer implements RemainingTasksResolver, Runnable{
 
-    private final DomainReader domainReader;
+    private final DomainsFileReader domainsFileReader;
 
     @Qualifier("executionQueue")
     private final TaskExecutionQueue executionQueue;
@@ -19,8 +19,8 @@ public class TasksProducer implements RemainingTasksResolver, Runnable{
     private int submittedTasksCount = 0;
 
     @Autowired
-    public TasksProducer(DomainReader domainReader, TaskExecutionQueue executionQueue, TaskFactory taskFactory) {
-        this.domainReader = domainReader;
+    public TasksProducer(DomainsFileReader domainsFileReader, TaskExecutionQueue executionQueue, TaskFactory taskFactory) {
+        this.domainsFileReader = domainsFileReader;
         this.executionQueue = executionQueue;
         this.taskFactory = taskFactory;
     }
@@ -36,7 +36,7 @@ public class TasksProducer implements RemainingTasksResolver, Runnable{
 
     @Override
     public void run() {
-        domainReader.getDomains()
+        domainsFileReader.getDomains()
                 .map(this::applyProtocol)
                 .map(Site::new)
                 .map(taskFactory)

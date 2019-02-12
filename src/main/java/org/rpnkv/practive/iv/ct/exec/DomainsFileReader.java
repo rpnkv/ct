@@ -13,13 +13,12 @@ import java.util.stream.Stream;
 
 @Component
 @PropertySource("classpath:application.properties")
-public class DomainReader {
+public class DomainsFileReader {
 
-    private static final Logger logger = LoggerFactory.getLogger(DomainReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(DomainsFileReader.class);
 
     @Value("${file.input}")
     private String inputPath;
-
 
     public Stream<String> getDomains() {
         logger.info("Reading domain list from {}", inputPath);

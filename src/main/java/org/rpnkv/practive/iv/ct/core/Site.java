@@ -2,6 +2,9 @@ package org.rpnkv.practive.iv.ct.core;
 
 import java.util.Objects;
 
+/**
+ *
+ */
 public class Site {
 
     private final String url;

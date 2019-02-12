@@ -30,6 +30,7 @@ public class PersistQueue {
         synchronized (lock){
             while (persistQueue.size() == queueLength){
                 try {
+                    logger.error("Persist queue overflow!");
                     lock.wait();
                 } catch (InterruptedException e) {
                     logger.error("Failed waiting for queue release");

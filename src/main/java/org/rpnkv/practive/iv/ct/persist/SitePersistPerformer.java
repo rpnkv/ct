@@ -12,7 +12,6 @@ import java.io.*;
 
 
 @Service
-@PropertySource("classpath:application.properties")
 public class SitePersistPerformer {
 
     private static final Logger logger = LoggerFactory.getLogger(FileWriter.class);

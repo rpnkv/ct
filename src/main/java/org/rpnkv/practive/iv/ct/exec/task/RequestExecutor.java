@@ -44,7 +44,7 @@ public class RequestExecutor implements Consumer<Site> {
             InputStream is = connection.getInputStream();
             site.setContents(readResponse(is));
         } catch (Exception e) {
-            logger.warn("Failed fetching from {} - {}", site.getUrl(), e.getMessage());
+            logger.info("Failed fetching from {} - {}", site.getUrl(), e.getMessage());
             site.setContents(resolveContentsForFailedRequest(e));
         } finally {
             if (connection != null) {
@@ -60,12 +60,15 @@ public class RequestExecutor implements Consumer<Site> {
             is.close();
             return contents;
         } catch (IOException e) {
-            logger.warn("Failed reading contents from {}, {}", e.getMessage());
+            logger.info("Failed reading contents from {}, {}", e.getMessage());
             return resolveContentsForFailedRequest(e);
         }
     }
 
     private byte[] resolveContentsForFailedRequest(Exception e){
+        if(e.getMessage() == null || e.getMessage().isEmpty()){
+
+        }
         return e.getMessage() != null ? e.getMessage().getBytes() : "Failure".getBytes();
     }
 }
