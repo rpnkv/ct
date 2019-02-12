@@ -1,6 +1,7 @@
 package org.rpnkv.practive.iv.ct.exec;
 
 import org.rpnkv.practive.iv.ct.core.Site;
+import org.rpnkv.practive.iv.ct.exec.task.TaskFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

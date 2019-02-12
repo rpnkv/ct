@@ -3,19 +3,10 @@ package org.rpnkv.practive.iv.ct;
 import org.rpnkv.practive.iv.ct.exec.TasksProducer;
 import org.rpnkv.practive.iv.ct.presist.PersistingSiteConsumer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @ComponentScan
-@Configuration
 public class Main{
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
     public static void main(String[] args) throws InterruptedException {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Main.class);

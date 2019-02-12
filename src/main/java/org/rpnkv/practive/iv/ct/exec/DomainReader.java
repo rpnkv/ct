@@ -1,12 +1,14 @@
 package org.rpnkv.practive.iv.ct.exec;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Component
@@ -20,6 +22,11 @@ public class DomainReader {
 
 
     public Stream<String> getDomains() {
-        throw new NotImplementedException("");
+        logger.info("Reading domain list from {}", inputPath);
+        try {
+            return Files.lines(Paths.get(inputPath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

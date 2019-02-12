@@ -1,4 +1,4 @@
-package org.rpnkv.practive.iv.ct.exec;
+package org.rpnkv.practive.iv.ct.exec.task;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.rpnkv.practive.iv.ct.core.Site;
@@ -8,12 +8,16 @@ import java.util.function.Function;
 
 @Service
 public class TaskFactory implements Function<Site, ExecutionTask> {
+
+    private int totalCount;
+
     @Override
     public ExecutionTask apply(Site site) {
-        throw new NotImplementedException("");
+        totalCount++;
+        return new ExecutionTask();
     }
 
     public int getTotalCount() {
-        throw new NotImplementedException("");
+        return totalCount;
     }
 }
