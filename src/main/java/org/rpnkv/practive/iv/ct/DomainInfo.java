@@ -1,4 +1,4 @@
-package org.rpnkv.practive.iv.ct.core;
+package org.rpnkv.practive.iv.ct;
 
 import java.util.Objects;
 

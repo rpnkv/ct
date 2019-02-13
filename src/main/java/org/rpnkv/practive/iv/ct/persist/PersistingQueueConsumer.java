@@ -1,6 +1,6 @@
 package org.rpnkv.practive.iv.ct.persist;
 
-import org.rpnkv.practive.iv.ct.core.DomainInfo;
+import org.rpnkv.practive.iv.ct.DomainInfo;
 import org.rpnkv.practive.iv.ct.fetch.RemainingTasksResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

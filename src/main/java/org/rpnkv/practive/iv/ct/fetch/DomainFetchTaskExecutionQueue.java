@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
@@ -20,7 +18,7 @@ public class DomainFetchTaskExecutionQueue implements Consumer<DomainFetchTaskAs
     @Value("${queue.execution.length}")
     private int queueLength;
 
-    private final Queue<DomainFetchTaskAsync> taskQueue = new LinkedList<>();
+    private int tasksCount = 0;
     private final Object lock;
     private final ExecutorService executorService;
 
@@ -32,34 +30,27 @@ public class DomainFetchTaskExecutionQueue implements Consumer<DomainFetchTaskAs
 
     @Override
     public void accept(DomainFetchTaskAsync domainFetchTaskAsync) {
-        synchronized (lock){
-            while (taskQueue.size() == queueLength){
+        synchronized (lock) {
+            while (tasksCount == queueLength) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
-                    logger.error("Failed waiting queue to release",e);
+                    logger.error("Failed waiting queue to release", e);
                     throw new RuntimeException(e);//TODO handle and break the program
                 }
             }
 
-            taskQueue.add(domainFetchTaskAsync);
             executorService.execute(domainFetchTaskAsync);
+            tasksCount++;
             logger.debug("submitted task {}", domainFetchTaskAsync);
 
-            if(taskQueue.size() == 1){//TODO check if size check is required
-                lock.notify();
-            }
+            lock.notify();
         }
     }
 
     public void remove(DomainFetchTaskAsync domainFetchTaskAsync) {
-        synchronized (lock){
-            /*boolean remove = taskQueue.remove(domainFetchTaskAsync);
-            if(!remove){
-                logger.error("Attempting to remove task which isn't present inside the queue: {}", domainFetchTaskAsync);
-            }*/
-
-            taskQueue.poll();//it appears that doesn't actually matter, which task is removed //TODO create semaphore
+        synchronized (lock) {
+            tasksCount--;
             logger.debug("removed task {}", domainFetchTaskAsync);
 
             lock.notify();

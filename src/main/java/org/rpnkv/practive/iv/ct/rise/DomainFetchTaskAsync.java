@@ -1,6 +1,6 @@
 package org.rpnkv.practive.iv.ct.rise;
 
-import org.rpnkv.practive.iv.ct.core.DomainInfo;
+import org.rpnkv.practive.iv.ct.DomainInfo;
 import org.rpnkv.practive.iv.ct.fetch.TaskExecutedCallback;
 
 import java.util.function.Consumer;

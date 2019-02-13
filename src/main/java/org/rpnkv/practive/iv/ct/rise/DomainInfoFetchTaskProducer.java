@@ -1,6 +1,6 @@
 package org.rpnkv.practive.iv.ct.rise;
 
-import org.rpnkv.practive.iv.ct.core.DomainInfo;
+import org.rpnkv.practive.iv.ct.DomainInfo;
 import org.rpnkv.practive.iv.ct.fetch.RemainingTasksResolver;
 import org.rpnkv.practive.iv.ct.fetch.DomainFetchTaskExecutionQueue;
 import org.springframework.beans.factory.annotation.Autowired;
