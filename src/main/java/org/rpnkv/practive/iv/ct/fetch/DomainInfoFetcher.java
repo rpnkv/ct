@@ -46,7 +46,7 @@ public class DomainInfoFetcher implements Consumer<DomainInfo> {
             InputStream is = connection.getInputStream();
             domainInfo.setContents(readResponse(is));
         } catch (Exception e) {
-            logger.info("Failed fetching from {} - {}", domainInfo.getUrl(), e.getMessage());
+            logger.debug("Failed fetching from {} - {}", domainInfo.getUrl(), e.getMessage());
             domainInfo.setContents(resolveContentsForFailedRequest(e));
         } finally {
             if (connection != null) {
@@ -62,7 +62,7 @@ public class DomainInfoFetcher implements Consumer<DomainInfo> {
             is.close();
             return contents;
         } catch (IOException e) {
-            logger.info("Failed reading contents from {}, {}", e.getMessage());
+            logger.debug("Failed reading contents from {}, {}", e.getMessage());
             return resolveContentsForFailedRequest(e);
         }
     }

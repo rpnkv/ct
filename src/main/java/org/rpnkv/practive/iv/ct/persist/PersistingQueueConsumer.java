@@ -2,6 +2,7 @@ package org.rpnkv.practive.iv.ct.persist;
 
 import org.rpnkv.practive.iv.ct.DomainInfo;
 import org.rpnkv.practive.iv.ct.fetch.RemainingTasksResolver;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class PersistingQueueConsumer implements Runnable{
             persistedTasksCount++;
         }
 
+        LoggerFactory.getLogger(PersistingQueueConsumer.class).info("Persisted {} sites", persistedTasksCount);
         persistPerformer.close();
     }
 }

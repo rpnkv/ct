@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
 @Service
@@ -18,42 +20,35 @@ public class DomainFetchTaskExecutionQueue implements Consumer<DomainFetchTaskAs
     @Value("${queue.execution.length}")
     private int queueLength;
 
-    private int tasksCount = 0;
-    private final Object lock;
+    private Semaphore semaphore;
     private final ExecutorService executorService;
 
     @Autowired
-    public DomainFetchTaskExecutionQueue(Object lock, ExecutorService executorService) {
-        this.lock = lock;
+    public DomainFetchTaskExecutionQueue(ExecutorService executorService) {
         this.executorService = executorService;
+    }
+
+    @PostConstruct
+    public void init() {
+        semaphore = new Semaphore(queueLength - 1);
     }
 
     @Override
     public void accept(DomainFetchTaskAsync domainFetchTaskAsync) {
-        synchronized (lock) {
-            while (tasksCount == queueLength) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    logger.error("Failed waiting queue to release", e);
-                    throw new RuntimeException(e);//TODO handle and break the program
-                }
-            }
-
-            executorService.execute(domainFetchTaskAsync);
-            tasksCount++;
-            logger.debug("submitted task {}", domainFetchTaskAsync);
-
-            lock.notify();
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            logger.error("Failed waiting queue to release", e);
+            throw new RuntimeException(e);//TODO handle and break the program
         }
+
+        executorService.execute(domainFetchTaskAsync);
+        logger.debug("submitted task {}", domainFetchTaskAsync);
+
     }
 
     public void remove(DomainFetchTaskAsync domainFetchTaskAsync) {
-        synchronized (lock) {
-            tasksCount--;
-            logger.debug("removed task {}", domainFetchTaskAsync);
-
-            lock.notify();
-        }
+        semaphore.release();
+        logger.debug("removed task {}", domainFetchTaskAsync);
     }
 }

@@ -43,6 +43,7 @@ public class DomainInfoPersistQueue {
 
             persistQueue.add(domainInfo);
             logger.debug("submitted domainInfo {}", domainInfo);
+            lock.notify();
         }
     }
 
@@ -56,6 +57,7 @@ public class DomainInfoPersistQueue {
                 }
             }
 
+            lock.notify();
             return persistQueue.poll();
         }
     }
