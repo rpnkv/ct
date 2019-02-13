@@ -30,7 +30,8 @@ public class TaskFactory implements Function<DomainInfo, DomainFetchTaskAsync> {
         return new DomainFetchTaskAsync(taskExecutedCallback, domainInfoFetcher, domainInfo);
     }
 
-    int getTotalCount() {
+    public int getTotalCount() {
         return totalCount;
     }
+
 }

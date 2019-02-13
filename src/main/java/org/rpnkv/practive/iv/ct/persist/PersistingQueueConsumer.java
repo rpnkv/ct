@@ -15,7 +15,7 @@ public class PersistingQueueConsumer implements Runnable{
     private final DomainInfoPersistQueue domainInfoPersistQueue;
     private final RemainingTasksResolver remainingTasksResolver;
     private final DomainInfoToFileWriter persistPerformer;
-    private int persistedTasksCount;
+    private int persistedDomainsCount;
 
     @Autowired
     public PersistingQueueConsumer(DomainInfoPersistQueue domainInfoPersistQueue, RemainingTasksResolver remainingTasksResolver,
@@ -23,7 +23,7 @@ public class PersistingQueueConsumer implements Runnable{
         this.domainInfoPersistQueue = domainInfoPersistQueue;
         this.remainingTasksResolver = remainingTasksResolver;
         this.persistPerformer = persistPerformer;
-        persistedTasksCount = 0;
+        persistedDomainsCount = 0;
     }
 
     /**
@@ -32,13 +32,17 @@ public class PersistingQueueConsumer implements Runnable{
      */
     @Override
     public void run() {
-        while (remainingTasksResolver.remainingTasksLeft(persistedTasksCount)){
+        while (remainingTasksResolver.remainingTasksLeft(persistedDomainsCount)){
             DomainInfo nextDomainInfo = domainInfoPersistQueue.next();
             persistPerformer.persist(nextDomainInfo);
-            persistedTasksCount++;
+            persistedDomainsCount++;
         }
 
-        LoggerFactory.getLogger(PersistingQueueConsumer.class).info("Persisted {} sites", persistedTasksCount);
+        LoggerFactory.getLogger(PersistingQueueConsumer.class).info("Persisted {} sites", persistedDomainsCount);
         persistPerformer.close();
+    }
+
+    public int getPersistedDomainsCount() {
+        return persistedDomainsCount;
     }
 }

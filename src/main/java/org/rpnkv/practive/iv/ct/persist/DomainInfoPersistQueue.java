@@ -62,4 +62,11 @@ public class DomainInfoPersistQueue {
         }
     }
 
+    public int getCurrentActiveTasksCount() {
+        return persistQueue.size();
+    }
+
+    public int getMaxActiveTasksCount() {
+        return queueLength;
+    }
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 @Configuration
 @ComponentScan
 @PropertySource("classpath:application.properties")
-public class BeansConfiguration {
+public class BeansConfiguration{
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -28,5 +28,4 @@ public class BeansConfiguration {
     public Object lock(){
         return new Object();
     }
-
 }

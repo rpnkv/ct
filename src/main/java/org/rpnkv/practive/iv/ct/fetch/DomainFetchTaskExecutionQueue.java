@@ -51,4 +51,12 @@ public class DomainFetchTaskExecutionQueue implements Consumer<DomainFetchTaskAs
         semaphore.release();
         logger.debug("removed task {}", domainFetchTaskAsync);
     }
+
+    public int getCurrentActiveTasksCount() {
+        return queueLength - 1 - semaphore.availablePermits();
+    }
+
+    public int getMaxActiveTasksCount() {
+        return queueLength;
+    }
 }
